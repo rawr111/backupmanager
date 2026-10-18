@@ -3,7 +3,6 @@ package usecases
 import (
 	"context"
 	"fmt"
-	"time"
 )
 
 type BackupMngr interface {
@@ -43,11 +42,7 @@ func (u *Usecase) BackupFiles(ctx context.Context) []Job {
 	for _, file := range filesToCopy {
 		result = append(result, Job{
 			Func: func(ctx context.Context) error {
-				fmt.Println("start")
-				time.Sleep(time.Second * 1)
-				fmt.Println("end")
-				return nil
-				//return u.mngr.BackupFile(ctx, file.path, file.alias)
+				return u.mngr.BackupFile(ctx, file.path, file.alias)
 			},
 			Name: fmt.Sprintf("backup %s file as %s", file.path, file.alias),
 		})

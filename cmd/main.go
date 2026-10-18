@@ -49,14 +49,18 @@ type Config struct {
 }
 
 func readConfig() (Config, error) {
-	fmt.Println("enter google api key: ")
 	var apikey string
-	_, err := fmt.Scan(&apikey)
-	if err != nil {
-		return Config{}, fmt.Errorf("google drive api key read: %w", err)
-	}
-	if len(apikey) == 0 {
-		return Config{}, fmt.Errorf("google drive api key cannot be empty")
+	apikey, ok := os.LookupEnv("GOOGLE_DRIVE_API_KEY")
+
+	if !ok {
+		fmt.Println("enter google api key: ")
+		_, err := fmt.Scan(&apikey)
+		if err != nil {
+			return Config{}, fmt.Errorf("google drive api key read: %w", err)
+		}
+		if len(apikey) == 0 {
+			return Config{}, fmt.Errorf("google drive api key cannot be empty")
+		}
 	}
 
 	return Config{
