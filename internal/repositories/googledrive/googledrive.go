@@ -8,13 +8,19 @@ import (
 )
 
 type GoogleDrive struct {
-	cli http.Client
+	cli    http.Client
+	apikey string
 }
 
 // use pointer receiver because we dont want copy http.client
-func New() *GoogleDrive {
-	return &GoogleDrive{}
+func New(apikey string) *GoogleDrive {
+	return &GoogleDrive{
+		apikey: apikey,
+		cli:    http.Client{},
+	}
 }
+
+const uploadFilePath string = "/upload/drive/v3/files?uploadType=media"
 
 func (drive *GoogleDrive) UploadFile(ctx context.Context, filePath string, alias string) error {
 	file, err := os.Open(filePath)
@@ -23,7 +29,7 @@ func (drive *GoogleDrive) UploadFile(ctx context.Context, filePath string, alias
 	}
 	defer file.Close()
 
-	resp, err := drive.doHttpRequest(ctx, methodPost, "", file)
+	resp, err := drive.doHttpRequest(ctx, methodPost, uploadFilePath, file)
 	if err != nil {
 		return err
 	}

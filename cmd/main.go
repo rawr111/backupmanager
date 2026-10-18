@@ -13,8 +13,13 @@ import (
 )
 
 func main() {
+	cfg, err := readConfig()
+	if err != nil {
+		panic(err)
+	}
+
 	app := application.New()
-	googleDrive := googledrive.New()
+	googleDrive := googledrive.New(cfg.GoogleDriveApiKey)
 	mngr := backupmanager.New(googleDrive)
 	usecase := usecases.New(mngr)
 
@@ -37,4 +42,24 @@ func main() {
 	fmt.Println("wait...")
 	app.Wait(ctx)
 	fmt.Println("done")
+}
+
+type Config struct {
+	GoogleDriveApiKey string
+}
+
+func readConfig() (Config, error) {
+	fmt.Println("enter google api key: ")
+	var apikey string
+	_, err := fmt.Scan(&apikey)
+	if err != nil {
+		return Config{}, fmt.Errorf("google drive api key read: %w", err)
+	}
+	if len(apikey) == 0 {
+		return Config{}, fmt.Errorf("google drive api key cannot be empty")
+	}
+
+	return Config{
+		GoogleDriveApiKey: apikey,
+	}, nil
 }

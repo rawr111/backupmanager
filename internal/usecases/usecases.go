@@ -15,6 +15,7 @@ type Usecase struct {
 }
 
 func New(mngr BackupMngr) *Usecase {
+
 	return &Usecase{
 		mngr: mngr,
 	}
