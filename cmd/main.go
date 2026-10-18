@@ -22,13 +22,19 @@ func main() {
 	ctx, stop := signal.NotifyContext(ctx, os.Interrupt, syscall.SIGTERM)
 	defer stop()
 
-	app.AddJob(ctx, usecase.BackupJob)
+	for _, job := range usecase.BackupFiles(ctx) {
+		jobResult := app.AddJob(ctx, job.Func)
+		go func() {
+			res := <-jobResult
+			if !res.Ok {
+				fmt.Printf("job '%s' has been done with error: %v\n", job.Name, res.Err)
+			} else {
+				fmt.Printf("job '%s' has been done\n", job.Name)
+			}
+		}()
+	}
 
-	go func() {
-		for err := range app.Result(ctx) {
-			fmt.Printf("job run error: %s\n", err)
-		}
-	}()
-
+	fmt.Println("wait...")
 	app.Wait(ctx)
+	fmt.Println("done")
 }

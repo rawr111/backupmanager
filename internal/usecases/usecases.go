@@ -25,14 +25,32 @@ type file struct {
 	alias string
 }
 
-func (u *Usecase) BackupJob(ctx context.Context) error {
-	// filesToCopy := []file{
-	// 	{
-	// 		"/Users/gladkikhmikhail/Downloads/250.zip",
-	// 		"some_big_file",
-	// 	},
-	// }
-	fmt.Println("sleeep...")
-	time.Sleep(time.Hour * 10)
-	return u.mngr.BackupFile(ctx, "", "")
+type Job struct {
+	Func func(ctx context.Context) error
+	Name string
+}
+
+func (u *Usecase) BackupFiles(ctx context.Context) []Job {
+	filesToCopy := []file{
+		{
+			"/Users/gladkikhmikhail/Downloads/250.zip",
+			"some_big_file",
+		},
+	}
+
+	result := []Job{}
+	for _, file := range filesToCopy {
+		result = append(result, Job{
+			Func: func(ctx context.Context) error {
+				fmt.Println("start")
+				time.Sleep(time.Second * 1)
+				fmt.Println("end")
+				return nil
+				//return u.mngr.BackupFile(ctx, file.path, file.alias)
+			},
+			Name: fmt.Sprintf("backup %s file as %s", file.path, file.alias),
+		})
+	}
+
+	return result
 }
