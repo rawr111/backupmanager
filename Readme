@@ -1,0 +1,12 @@
+This project's main feature is making copy of your local files in Google Drive
+
+Use cases:
+1. backupmanager configure <SET GOOGLE API TOKEN HERE>
+2. backupmanager upload ./some-file.mp4
+3. backupmanager download ./some-file.mp4
+4. backupmanager activities
+
+cleanup scenarios:
+-> close file when we fully read it
+background processes:
+-> show all our active downloads and uploads
