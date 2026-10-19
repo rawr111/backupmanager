@@ -18,7 +18,7 @@ func New(store Store) *Backupmanager {
 }
 
 func (b *Backupmanager) BackupFile(ctx context.Context, filePath string, alias string) error {
-	err := b.store.UploadFile(ctx, "file path", "alias...")
+	err := b.store.UploadFile(ctx, filePath, alias)
 	if err != nil {
 		return err
 	}

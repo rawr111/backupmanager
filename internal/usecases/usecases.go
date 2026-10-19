@@ -33,8 +33,8 @@ type Job struct {
 func (u *Usecase) BackupFiles(ctx context.Context) []Job {
 	filesToCopy := []file{
 		{
-			"/Users/gladkikhmikhail/Downloads/250.zip",
-			"some_big_file",
+			"/Users/gladkikhmikhail/study/backupmanager/Readme",
+			"some_readme",
 		},
 	}
 
