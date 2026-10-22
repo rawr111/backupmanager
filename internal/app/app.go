@@ -34,6 +34,9 @@ func New() *App {
 
 // how many jobs are currently running
 func (a *App) JobCount() int {
+	a.mu.RLock()
+	defer a.mu.RUnlock()
+
 	return len(a.currentJobs)
 }
 
@@ -41,9 +44,10 @@ func (a *App) AddJob(ctx context.Context, f func(ctx context.Context) error) <-c
 	a.wg.Add(1)
 	result := make(chan JobResult)
 	jobId := uuid.NewString()
-	a.mu.RLock()
+
+	a.mu.Lock()
+	defer a.mu.Unlock()
 	a.currentJobs[jobId] = job{jobId}
-	a.mu.RUnlock()
 
 	go func() {
 		err := f(ctx)
@@ -51,9 +55,10 @@ func (a *App) AddJob(ctx context.Context, f func(ctx context.Context) error) <-c
 			Err: err,
 			Ok:  err == nil,
 		}
-		a.mu.RLock()
+		a.mu.Lock()
 		delete(a.currentJobs, jobId)
-		a.mu.RUnlock()
+		a.mu.Unlock()
+
 		a.wg.Done()
 	}()
 

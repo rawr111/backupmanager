@@ -22,9 +22,9 @@ func (j *jobMaker) makeLongTestOpeartion(delaySeconds int) testOperation {
 		case <-t.C:
 		}
 
-		j.mu.RLock()
+		j.mu.Lock()
 		j.countJobDone++
-		j.mu.RUnlock()
+		j.mu.Unlock()
 
 		return nil
 	}
