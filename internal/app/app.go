@@ -18,6 +18,7 @@ type job struct {
 
 type App struct {
 	currentJobs map[string]job
+	mu          sync.RWMutex
 	wg          sync.WaitGroup
 	done        chan struct{}
 }
@@ -40,7 +41,9 @@ func (a *App) AddJob(ctx context.Context, f func(ctx context.Context) error) <-c
 	a.wg.Add(1)
 	result := make(chan JobResult)
 	jobId := uuid.NewString()
+	a.mu.RLock()
 	a.currentJobs[jobId] = job{jobId}
+	a.mu.RUnlock()
 
 	go func() {
 		err := f(ctx)
@@ -48,7 +51,9 @@ func (a *App) AddJob(ctx context.Context, f func(ctx context.Context) error) <-c
 			Err: err,
 			Ok:  err == nil,
 		}
+		a.mu.RLock()
 		delete(a.currentJobs, jobId)
+		a.mu.RUnlock()
 		a.wg.Done()
 	}()
 
