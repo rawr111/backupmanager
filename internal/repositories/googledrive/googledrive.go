@@ -44,7 +44,7 @@ func New(ctx context.Context, opts Opts) (*GoogleDrive, error) {
 
 	accessToken, err := drive.refreshAccessToken(ctx)
 	if err != nil {
-		fmt.Printf("access token refresh error: %s\n", err)
+		return nil, fmt.Errorf("init google drive repo: %w", err)
 	}
 	drive.accessToken = accessToken
 
@@ -96,7 +96,7 @@ func (drive *GoogleDrive) UploadFile(ctx context.Context, filePath string, alias
 	}
 
 	if resp.statusCode != 200 {
-		return fmt.Errorf("upload google drive file: %s", resp.body.err.message)
+		return fmt.Errorf("upload google drive file: %s", resp.body.err)
 	}
 
 	return nil

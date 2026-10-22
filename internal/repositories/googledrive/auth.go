@@ -39,7 +39,7 @@ func (drive *GoogleDrive) refreshAccessToken(
 
 	if resp.StatusCode != http.StatusOK {
 		body, _ := io.ReadAll(resp.Body)
-		return "", fmt.Errorf("refresh token failed: %s", body)
+		return "", fmt.Errorf("refresh access token failed: %s", body)
 	}
 
 	var result struct {

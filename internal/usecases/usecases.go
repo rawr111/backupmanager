@@ -14,7 +14,6 @@ type Usecase struct {
 }
 
 func New(mngr BackupMngr) *Usecase {
-
 	return &Usecase{
 		mngr: mngr,
 	}
@@ -32,6 +31,22 @@ type Job struct {
 
 func (u *Usecase) BackupFiles(ctx context.Context) []Job {
 	filesToCopy := []file{
+		{
+			"/Users/gladkikhmikhail/study/backupmanager/Readme",
+			"some_readme",
+		},
+		{
+			"/Users/gladkikhmikhail/Downloads/Docker.dmg",
+			"somedocker",
+		},
+		{
+			"/Users/gladkikhmikhail/study/backupmanager/Readme",
+			"some_readme",
+		},
+		{
+			"/Users/gladkikhmikhail/Downloads/Docker.dmg",
+			"somedocker",
+		},
 		{
 			"/Users/gladkikhmikhail/study/backupmanager/Readme",
 			"some_readme",

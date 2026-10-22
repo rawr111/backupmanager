@@ -9,10 +9,9 @@ import (
 )
 
 type payload struct {
-	err struct {
-		code    int
-		message string
-	}
+	err              string `json:"error"`
+	message          string `json:"message"`
+	errorDescription string `json:"error_description"`
 }
 
 type googleResponse struct {
@@ -66,13 +65,8 @@ func (drive *GoogleDrive) doHttpRequest(ctx context.Context, method method, path
 	err = json.Unmarshal(respBody, &payload)
 	if err != nil {
 		//если гугл нам ответил не стандартной ошибкой вдруг
-		payload.err = struct {
-			code    int
-			message string
-		}{
-			code:    resp.StatusCode,
-			message: string(respBody),
-		}
+		fmt.Println(respBody)
+		payload.err = string(respBody)
 		return googleResponse{
 			statusCode: resp.StatusCode,
 			body:       payload,

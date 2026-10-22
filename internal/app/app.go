@@ -3,6 +3,8 @@ package app
 import (
 	"context"
 	"sync"
+
+	"github.com/google/uuid"
 )
 
 type JobResult struct {
@@ -10,22 +12,35 @@ type JobResult struct {
 	Ok  bool
 }
 
+type job struct {
+	id string
+}
+
 type App struct {
-	wg   sync.WaitGroup
-	done chan struct{}
+	currentJobs map[string]job
+	wg          sync.WaitGroup
+	done        chan struct{}
 }
 
 // use pointer receiver because we cannot copy sync.waitgroup struct
 func New() *App {
 	return &App{
-		wg:   sync.WaitGroup{},
-		done: make(chan struct{}),
+		wg:          sync.WaitGroup{},
+		done:        make(chan struct{}),
+		currentJobs: make(map[string]job),
 	}
+}
+
+// how many jobs are currently running
+func (a *App) JobCount() int {
+	return len(a.currentJobs)
 }
 
 func (a *App) AddJob(ctx context.Context, f func(ctx context.Context) error) <-chan JobResult {
 	a.wg.Add(1)
 	result := make(chan JobResult)
+	jobId := uuid.NewString()
+	a.currentJobs[jobId] = job{jobId}
 
 	go func() {
 		err := f(ctx)
@@ -33,6 +48,7 @@ func (a *App) AddJob(ctx context.Context, f func(ctx context.Context) error) <-c
 			Err: err,
 			Ok:  err == nil,
 		}
+		delete(a.currentJobs, jobId)
 		a.wg.Done()
 	}()
 

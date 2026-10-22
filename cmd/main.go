@@ -6,7 +6,6 @@ import (
 	"backupmanager/internal/services/backupmanager"
 	"backupmanager/internal/usecases"
 	"context"
-	"errors"
 	"fmt"
 	"os"
 	"os/signal"
@@ -25,8 +24,7 @@ func main() {
 
 	app := application.New()
 	googleDrive, err := googledrive.New(ctx, cfg.GoogleDrive)
-	//если что-то не так с параметрами при запуске приложения, то разумно выйти с паникой
-	if errors.Is(err, googledrive.OptsValidationError) {
+	if err != nil {
 		panic(err)
 	}
 	mngr := backupmanager.New(googleDrive)
@@ -41,6 +39,7 @@ func main() {
 			} else {
 				fmt.Printf("job '%s' has been done\n", job.Name)
 			}
+			fmt.Printf("%d jobs are currently working\n", app.JobCount())
 		}()
 	}
 
