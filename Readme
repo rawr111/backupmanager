@@ -1,12 +1,7 @@
 This project's main feature is making copy of your local files in Google Drive
 
 Use cases:
-1. backupmanager configure <SET GOOGLE API TOKEN HERE>
-2. backupmanager upload ./some-file.mp4
-3. backupmanager download ./some-file.mp4
-4. backupmanager activities
-
-cleanup scenarios:
--> close file when we fully read it
-background processes:
--> show all our active downloads and uploads
+1. add files you want to upload to googledrive in usecases.go
+2. compile program
+3. start backupmanager with creds: GOOGLE_DRIVE_REFRESH_TOKEN, GOOGLE_DRIVE_CLIENT_ID, GOOGLE_DRIVE_SECRET_ID
+3. wait until all jobs are done
